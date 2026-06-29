@@ -54,16 +54,25 @@ gh_bin() {
   ) && ok "$name -> $("$BIN/$name" --version 2>&1 | head -1)"
 }
 
-echo "==> 1/4 安装全局 CLAUDE.md"
+echo "==> 1/4 安装全局 CLAUDE.md + statusline"
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-.}")" && pwd)"
-if [ -f "$SRC_DIR/CLAUDE.md" ]; then
-  mkdir -p "$HOME/.claude"
-  cp "$SRC_DIR/CLAUDE.md" "$HOME/.claude/CLAUDE.md" && ok "~/.claude/CLAUDE.md"
+mkdir -p "$HOME/.claude"
+RAW="https://raw.githubusercontent.com/emt0re0/MyClaudeCode/main"
+# 本地有就拷,没有(curl|bash 方式)就从 raw 拉
+fetch_into() { # fetch_into <仓库内文件名> <目标路径>
+  if [ -f "$SRC_DIR/$1" ]; then cp "$SRC_DIR/$1" "$2"; else curl -fsSL "$RAW/$1" -o "$2"; fi
+}
+fetch_into CLAUDE.md             "$HOME/.claude/CLAUDE.md"             && ok "~/.claude/CLAUDE.md"
+fetch_into statusline-command.sh "$HOME/.claude/statusline-command.sh" && ok "~/.claude/statusline-command.sh"
+# 把 statusLine 指向脚本、并关掉 fullscreen(tui=default),保留 settings.json 里其它键
+SETTINGS="$HOME/.claude/settings.json"; [ -f "$SETTINGS" ] || echo '{}' > "$SETTINGS"
+if command -v jq >/dev/null 2>&1; then
+  tmp="$(mktemp)"
+  jq --arg cmd "bash $HOME/.claude/statusline-command.sh" \
+     '.statusLine = {type:"command", command:$cmd} | .tui = "default"' \
+     "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS" && ok "settings.json: statusLine + tui=default"
 else
-  # 通过 curl|bash 运行时本地没有文件,从 raw 拉取
-  mkdir -p "$HOME/.claude"
-  curl -fsSL https://raw.githubusercontent.com/emt0re0/MyClaudeCode/main/CLAUDE.md \
-    -o "$HOME/.claude/CLAUDE.md" && ok "~/.claude/CLAUDE.md (从 raw 拉取)"
+  warn "无 jq,跳过 settings.json 合并;请手动把 statusLine.command 设为 bash ~/.claude/statusline-command.sh"
 fi
 
 echo "==> 2/4 Python 工具 (uv)"

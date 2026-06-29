@@ -3,8 +3,9 @@
 我的 Claude Code 全局配置 + 一套好用的命令行工具,一条命令装齐。
 **换新机器时,把这个仓库链接丢给 Claude 就行,不用别的操作。**
 
-- `CLAUDE.md` —— 全局约定(语言、用 uv、搜索/文件习惯、Git 习惯)。装完落到 `~/.claude/CLAUDE.md`,对所有项目生效。
-- `install.sh` —— 无 sudo、可重复跑的安装脚本,把下面这些工具都装进 `~/.local/bin`。
+- `CLAUDE.md` —— 全局约定(语言、用 uv、搜索/文件习惯、Git 习惯、网络/代理)。装完落到 `~/.claude/CLAUDE.md`,对所有项目生效。
+- `statusline-command.sh` —— 自定义状态栏(模型 / 目录 / 上下文用量 / git 分支 / 额度剩余)。装完落到 `~/.claude/`。
+- `install.sh` —— 无 sudo、可重复跑的安装脚本:装好下面这些工具到 `~/.local/bin`,部署 `CLAUDE.md` 和状态栏,并把 `settings.json` 的 `statusLine` 指好、`tui` 设为 `default`(关掉那个鼠标/选中自动复制的全屏模式)。
 
 ## 安装
 

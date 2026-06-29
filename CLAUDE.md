@@ -47,3 +47,9 @@
 ## Git
 - 改动前后给出 diff。不要自动 commit 或 push —— 等确认。
 - 不要在未事先说明的情况下执行破坏性命令(`git reset --hard`、`rm -rf`、强制覆盖)。
+
+## 网络 / 代理(本机及类似的国内服务器)
+- 外网走**本地代理**:`http_proxy` / `https_proxy = http://127.0.0.1:6657`,`ALL_PROXY = socks5://127.0.0.1:6658`(env 里已设)。**直连 GitHub / 外网不通,必须走代理。**
+- 代理偶尔慢:访问 GitHub 报 `TLS handshake timeout` 基本就是代理那一下抽风,**重试一两次**通常就过。诊断连通性时超时给够(20s+),别用过短的 `-m` 误判成「不通」。
+- `git` 已配好免登(`gh` 凭据 + `credential.helper=store`),`push` / `clone` 直接走代理即可,不用再登录。
+- 下载 GitHub release 二进制同理:走代理、超时重试。直连别试,纯属浪费时间。
