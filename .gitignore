@@ -1,0 +1,6 @@
+.env
+.env.*
+!.env.example
+auth.json
+*.backup*
+.DS_Store
